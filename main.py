@@ -51,8 +51,7 @@ books_by_name = {book["title"]: book for book in books_dict.values()}
 
 @app.get("/")
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "index.html", {
         "books": popular_books,
     })
 
@@ -61,16 +60,14 @@ async def index(request: Request):
 async def book_detail(request: Request, book_id: str):
     book = books_dict.get(book_id)
     if not book:
-        return templates.TemplateResponse("index.html", {
-            "request": request,
+        return templates.TemplateResponse(request, "index.html", {
             "books": popular_books,
         })
 
     rec_names = similarity(book["title"])          # call it like a function
     recommendations = [books_by_name[name] for name in rec_names if name in books_by_name]
 
-    return templates.TemplateResponse("book_detail.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "book_detail.html", {
         "book": book,
         "recommendations": recommendations,
     })

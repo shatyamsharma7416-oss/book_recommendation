@@ -1,0 +1,6 @@
+fastapi == 0.135.2
+fastapi[standard]
+Jinja2 == 3.1.6
+numpy == 2.4.4
+uvicorn == 0.42.0
+pandas == 3.0.2
