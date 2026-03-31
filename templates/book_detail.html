@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} — Folio{% endblock %}
+
+{% block content %}
+
+<div class="back-bar">
+  <a href="/" class="back-link">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 12H5M12 5l-7 7 7 7"/>
+    </svg>
+    All Books
+  </a>
+</div>
+
+<!-- Book Detail -->
+<section class="detail-section">
+  <div class="detail-cover-col">
+    <div class="detail-book-wrap">
+      <div class="detail-cover">
+        {% if book.image_url %}
+          <img src="{{ book.image_url }}" alt="{{ book.title }}" />
+        {% else %}
+          <div class="detail-cover-placeholder">
+            <span class="cover-big-initial">{{ book.title[0] }}</span>
+          </div>
+        {% endif %}
+      </div>
+      <div class="detail-book-shadow"></div>
+    </div>
+  </div>
+
+  <div class="detail-info-col">
+    <h1 class="detail-title">{{ book.title }}</h1>
+    <p class="detail-author">by <strong>{{ book.author }}</strong></p>
+
+    {% if book.year %}
+    <div class="detail-stats">
+      <div class="stat-item">
+        <span class="stat-value">{{ book.year }}</span>
+        <span class="stat-label">Published</span>
+      </div>
+    </div>
+    {% endif %}
+
+    {% if book.buy_url %}
+    <a href="{{ book.buy_url }}" target="_blank" class="btn-primary">Get this book →</a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Recommendations -->
+<section class="reco-section">
+  <div class="reco-header">
+    <div class="reco-line"></div>
+    <h2 class="reco-title">You might also enjoy</h2>
+    <div class="reco-line"></div>
+  </div>
+
+  <div class="reco-grid">
+    {% for rec in recommendations %}
+    <a href="/book/{{ rec.book_id }}" class="reco-card" style="--delay: {{ loop.index0 * 80 }}ms">
+      <div class="reco-cover-wrap">
+        <div class="reco-cover">
+          {% if rec.image_url %}
+            <img src="{{ rec.image_url }}" alt="{{ rec.title }}" loading="lazy" />
+          {% else %}
+            <div class="reco-placeholder">
+              <span>{{ rec.title[0] }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="reco-info">
+        <h4 class="reco-book-title">{{ rec.title }}</h4>
+        <p class="reco-book-author">{{ rec.author }}</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Folio — Popular Books{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Handpicked for you</p>
+    <h1 class="hero-title">Popular <em>Books</em></h1>
+    <p class="hero-subtitle">Fifty beloved titles — from timeless classics to modern must-reads.</p>
+  </div>
+  <div class="hero-ornament"></div>
+</section>
+
+<section class="books-section">
+  <div class="books-grid">
+    {% for book in books %}
+    <a href="/book/{{ book.book_id }}" class="book-card" style="--delay: {{ loop.index0 * 30 }}ms">
+      <div class="book-cover-wrap">
+        <div class="book-cover">
+          {% if book.image_url %}
+            <img src="{{ book.image_url }}" alt="{{ book.title }}" loading="lazy" />
+          {% else %}
+            <div class="book-cover-placeholder">
+              <span class="cover-initial">{{ book.title[0] }}</span>
+            </div>
+          {% endif %}
+        </div>
+        <div class="book-spine"></div>
+      </div>
+      <div class="book-info">
+        <h3 class="book-title">{{ book.title }}</h3>
+        <p class="book-author">{{ book.author }}</p>
+
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}
