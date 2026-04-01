@@ -113,8 +113,8 @@ def similarity(book_name):
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/yourusername/folio.git
-cd folio
+git clone https://github.com/shatyamsharma7416-oss/book_recommendation
+cd book_recommendation
 ```
 
 ### 2. Install dependencies
@@ -143,8 +143,8 @@ Visit `http://localhost:8000`
 ## Running with Docker
 
 ```bash
-docker build -t folio .
-docker run -p 8000:8000 folio
+docker build -t book_recommendation .
+docker run -p 8000:8000 book_recommendation
 ```
 
 ---
@@ -182,7 +182,3 @@ docker run -p 8000:8000 folio
 ```
 
 ---
-
-## License
-
-MIT
