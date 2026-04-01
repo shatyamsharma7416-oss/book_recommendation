@@ -32,7 +32,7 @@ A calm, beautiful book recommendation web app built with FastAPI and Jinja2. Dis
 ## Project Structure
 
 ```
-folio/
+book_recommendation/
 ├── main.py                      # FastAPI app, routes, search API
 ├── Dockerfile                   # Docker config for Render deployment
 ├── requirements.txt             # Python dependencies
