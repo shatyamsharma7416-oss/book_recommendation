@@ -6,10 +6,18 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse, Response
+from fastapi.middleware.cors import CORSMiddleware
 import pickle
 import numpy as np
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["GET"],
+    allow_headers=["*"],
+)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
@@ -37,6 +45,7 @@ def similarity(book_name):
     )[1:6]
     return [pt.index[i[0]] for i in similar_items]
 
+
 # Build name → book lookup for similarity results (case-insensitive)
 books_by_name = {title.lower(): book for title, book in books_dict.items()}
 
@@ -56,7 +65,7 @@ async def index(request: Request):
         "request": request,
         "books": popular_books,
     })
-    
+
 
 @app.get("/book/{book_name:path}")
 async def book_detail(request: Request, book_name: str):

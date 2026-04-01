@@ -58,6 +58,7 @@ main { position: relative; z-index: 1; }
   justify-content: space-between;
   padding: 0 clamp(1.5rem, 5vw, 4rem);
   height: 68px;
+  gap: 1rem;
   background: rgba(250, 248, 244, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -646,11 +647,6 @@ main { position: relative; z-index: 1; }
 }
 
 /* ---- SEARCH BAR ---- */
-.navbar {
-  justify-content: space-between;
-  gap: 1rem;
-}
-
 .search-wrap {
   position: relative;
   flex: 1;

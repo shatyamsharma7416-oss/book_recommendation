@@ -38,35 +38,40 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── Search autocomplete ───────────────────────────────────────────────────
-  const input     = document.getElementById('searchInput');
-  const dropdown  = document.getElementById('searchDropdown');
-  const clearBtn  = document.getElementById('searchClear');
+  const input    = document.getElementById('searchInput');
+  const dropdown = document.getElementById('searchDropdown');
+  const clearBtn = document.getElementById('searchClear');
 
-  if (!input) return;
+  if (!input || !dropdown || !clearBtn) return;
 
   let debounceTimer = null;
   let activeIndex   = -1;
   let currentItems  = [];
 
-  // Highlight matching substring in title
+  // Build absolute URL so it works on any host (localhost, Render, etc.)
+  const API_BASE = window.location.origin;
+
   function highlight(text, query) {
-    if (!query) return text;
+    if (!query) return escapeHtml(text);
     const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+    return escapeHtml(text).replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
   }
 
-  // Build a single result row
+  function escapeHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
   function buildItem(book, query) {
     const a = document.createElement('a');
     a.className = 'search-result-item';
-    a.href = `/book/${encodeURIComponent(book.title)}`;
+    a.href = `${API_BASE}/book/${encodeURIComponent(book.title)}`;
 
     const thumb = document.createElement('div');
     thumb.className = 'result-thumb';
     if (book.image_url) {
       const img = document.createElement('img');
       img.src = book.image_url;
-      img.alt = book.title;
+      img.alt = escapeHtml(book.title);
       img.loading = 'lazy';
       thumb.appendChild(img);
     } else {
@@ -94,22 +99,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return a;
   }
 
-  // Render dropdown sections
   function renderDropdown(matches, suggestions, query) {
     dropdown.innerHTML = '';
     currentItems = [];
     activeIndex = -1;
 
-    const hasMatches = matches.length > 0;
-    const hasSuggestions = suggestions.length > 0;
-
-    if (!hasMatches && !hasSuggestions) {
-      dropdown.innerHTML = '<div class="search-empty">No books found for that title</div>';
+    if (!matches.length && !suggestions.length) {
+      const empty = document.createElement('div');
+      empty.className = 'search-empty';
+      empty.textContent = 'No books found for that title';
+      dropdown.appendChild(empty);
       dropdown.classList.add('open');
       return;
     }
 
-    if (hasMatches) {
+    if (matches.length) {
       const label = document.createElement('div');
       label.className = 'dropdown-section-label';
       label.textContent = 'Books';
@@ -121,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    if (hasSuggestions) {
+    if (suggestions.length) {
       const label = document.createElement('div');
       label.className = 'dropdown-section-label';
       label.textContent = 'You might also like';
@@ -152,30 +156,32 @@ document.addEventListener('DOMContentLoaded', () => {
     activeIndex = index;
   }
 
-  // Fetch from backend
   async function fetchSuggestions(query) {
     try {
-      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-      if (!res.ok) return;
+      const url = `${API_BASE}/api/search?q=${encodeURIComponent(query)}`;
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' },
+      });
+      if (!res.ok) {
+        console.warn(`Search returned ${res.status}`);
+        return;
+      }
       const data = await res.json();
       renderDropdown(data.matches || [], data.suggestions || [], query);
     } catch (err) {
-      console.error('Search error:', err);
+      console.error('Search fetch error:', err);
     }
   }
 
-  // Input handler with debounce
   input.addEventListener('input', () => {
     const q = input.value.trim();
     clearBtn.classList.toggle('visible', q.length > 0);
     clearTimeout(debounceTimer);
-
     if (q.length < 2) { closeDropdown(); return; }
-
     debounceTimer = setTimeout(() => fetchSuggestions(q), 220);
   });
 
-  // Keyboard navigation
   input.addEventListener('keydown', (e) => {
     if (!dropdown.classList.contains('open')) return;
     if (e.key === 'ArrowDown') {
@@ -195,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Clear button
   clearBtn.addEventListener('click', () => {
     input.value = '';
     clearBtn.classList.remove('visible');
@@ -203,13 +208,13 @@ document.addEventListener('DOMContentLoaded', () => {
     input.focus();
   });
 
-  // Close on outside click
   document.addEventListener('click', (e) => {
     if (!e.target.closest('#searchWrap')) closeDropdown();
   });
 
   input.addEventListener('focus', () => {
-    if (input.value.trim().length >= 2) fetchSuggestions(input.value.trim());
+    const q = input.value.trim();
+    if (q.length >= 2) fetchSuggestions(q);
   });
 
 });
