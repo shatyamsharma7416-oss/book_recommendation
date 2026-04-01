@@ -242,6 +242,7 @@ main { position: relative; z-index: 1; }
   margin-bottom: 0.25rem;
   color: var(--ink);
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -576,6 +577,7 @@ main { position: relative; z-index: 1; }
   line-height: 1.3;
   margin-bottom: 0.2rem;
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -640,5 +642,188 @@ main { position: relative; z-index: 1; }
 @media (max-width: 600px) {
   .books-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1.5rem 1rem; }
   .detail-stats { gap: 1rem; padding: 1rem; flex-wrap: wrap; justify-content: center; }
+  .nav-tagline { display: none; }
+}
+
+/* ---- SEARCH BAR ---- */
+.navbar {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.search-wrap {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-warm);
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  padding: 0 14px;
+  height: 42px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-box:focus-within {
+  border-color: var(--accent-light);
+  box-shadow: 0 0 0 3px rgba(139,94,60,0.1);
+  background: var(--bg-card);
+}
+
+.search-icon {
+  color: var(--ink-muted);
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.search-box:focus-within .search-icon { color: var(--accent); }
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  color: var(--ink);
+  outline: none;
+  min-width: 0;
+}
+
+.search-input::placeholder { color: var(--ink-muted); }
+
+.search-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-muted);
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  border-radius: 50%;
+  display: none;
+  line-height: 1;
+  transition: color 0.15s, background 0.15s;
+}
+
+.search-clear:hover { color: var(--ink); background: var(--border); }
+.search-clear.visible { display: block; }
+
+/* ---- SEARCH DROPDOWN ---- */
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  display: none;
+  z-index: 200;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.search-dropdown.open { display: block; }
+
+.dropdown-section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: 10px 16px 6px;
+  font-weight: 500;
+  border-top: 1px solid var(--border);
+}
+
+.dropdown-section-label:first-child { border-top: none; }
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s;
+}
+
+.search-result-item:hover,
+.search-result-item.active {
+  background: var(--bg-warm);
+}
+
+.result-thumb {
+  width: 36px;
+  height: 54px;
+  border-radius: 3px 6px 6px 3px;
+  background: var(--accent-muted);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.result-thumb-initial {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+  opacity: 0.5;
+}
+
+.result-info { flex: 1; min-width: 0; }
+
+.result-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.result-title mark {
+  background: none;
+  color: var(--accent);
+  font-style: italic;
+}
+
+.result-author {
+  font-family: 'Lora', serif;
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-empty {
+  padding: 20px 16px;
+  text-align: center;
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 700px) {
+  .search-wrap { max-width: none; order: 3; flex-basis: 100%; }
+  .navbar { flex-wrap: wrap; height: auto; padding: 10px clamp(1rem, 4vw, 2rem); gap: 8px; }
   .nav-tagline { display: none; }
 }

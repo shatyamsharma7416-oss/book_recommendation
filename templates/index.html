@@ -16,7 +16,7 @@
 <section class="books-section">
   <div class="books-grid">
     {% for book in books %}
-    <a href="/book/{{ book.book_id }}" class="book-card" style="--delay: {{ loop.index0 * 30 }}ms">
+    <a href="/book/{{ book.title | urlencode }}" class="book-card" style="--delay: {{ loop.index0 * 30 }}ms">
       <div class="book-cover-wrap">
         <div class="book-cover">
           {% if book.image_url %}

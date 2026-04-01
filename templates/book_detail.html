@@ -59,7 +59,7 @@
 
   <div class="reco-grid">
     {% for rec in recommendations %}
-    <a href="/book/{{ rec.book_id }}" class="reco-card" style="--delay: {{ loop.index0 * 80 }}ms">
+    <a href="/book/{{ rec.title | urlencode }}" class="reco-card" style="--delay: {{ loop.index0 * 80 }}ms">
       <div class="reco-cover-wrap">
         <div class="reco-cover">
           {% if rec.image_url %}
